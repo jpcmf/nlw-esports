@@ -97,7 +97,7 @@ export default function App() {
                     className="bg-zinc-900 py-3 px-4 rounded text-sm placeholder:text-zinc-500"
                   />
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 w-2/4">
                   <label className="font-semibold" htmlFor="discord">
                     Qual seu Discord?
                   </label>
@@ -115,12 +115,50 @@ export default function App() {
                   <label className="font-semibold" htmlFor="weekDays">
                     Quando costuma jogar?
                   </label>
+                  <div className="flex flex-wrap gap-1">
+                    <button
+                      title="Domingo"
+                      className="w-8 h-8 rounded bg-zinc-900 "
+                    >
+                      D
+                    </button>
+                    <button
+                      title="Domingo"
+                      className="w-8 h-8 rounded bg-zinc-900 "
+                    >
+                      S
+                    </button>
+                    <button
+                      title="Domingo"
+                      className="w-8 h-8 rounded bg-zinc-900 "
+                    >
+                      T
+                    </button>
+                    <button
+                      title="Domingo"
+                      className="w-8 h-8 rounded bg-zinc-900 "
+                    >
+                      Q
+                    </button>
+                    <button
+                      title="Domingo"
+                      className="w-8 h-8 rounded bg-zinc-900 "
+                    >
+                      Q
+                    </button>
+                    <button
+                      title="Domingo"
+                      className="w-8 h-8 rounded bg-zinc-900 "
+                    >
+                      S
+                    </button>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 w-2/4">
                   <label className="font-semibold" htmlFor="hourStart">
                     Qual horário do dia?
                   </label>
-                  <div>
+                  <div className="flex justify-between gap-2">
                     <input
                       type="time"
                       name="hourStart"
@@ -146,14 +184,24 @@ export default function App() {
                     name="useVoiceChannel"
                     id="useVoiceChannel"
                   />
-                  Costumo me conectar ao chat de voz
+                  <span className="ml-3">
+                    Costumo me conectar ao chat de voz
+                  </span>
                 </label>
               </div>
 
-              <div className="flex flex-row mt-8">
-                <button>Cancelar</button>
-                <button type="submit" className="flex ">
-                  <GameController />
+              <div className="flex flex-row justify-end mt-8 gap-4">
+                <Dialog.Close
+                  type="button"
+                  className="bg-zinc-500 px-5 h-12 rounded-md font-semibold hover:bg-zinc-600"
+                >
+                  Cancelar
+                </Dialog.Close>
+                <button
+                  type="submit"
+                  className="flex place-items-center bg-violet-500 px-5 h-12 rounded-md font-semibold gap-3 hover:bg-violet-600"
+                >
+                  <GameController className="" size={24} />
                   Encontrar duo
                 </button>
               </div>

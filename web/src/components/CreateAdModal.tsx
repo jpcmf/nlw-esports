@@ -1,9 +1,28 @@
-import * as Dialog from '@radix-ui/react-dialog';
-import * as Checkbox from '@radix-ui/react-checkbox';
-import { Input } from './Form/Input';
-import { Check, GameController } from 'phosphor-react';
+import * as Dialog from "@radix-ui/react-dialog";
+import * as Checkbox from "@radix-ui/react-checkbox";
+import * as ToggleGroup from "@radix-ui/react-toggle-group";
+import { Input } from "./Form/Input";
+import { Check, GameController } from "phosphor-react";
+import { useEffect, useState } from "react";
+
+export interface Game {
+  id: string;
+  title: string;
+}
 
 export function CreateAdModal() {
+  const [games, setGames] = useState<Game[]>([]);
+  const [weekDays, setWeekDays] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3333/games")
+      .then((response) => response.json())
+      .then((data) => {
+        setGames(data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
     <Dialog.Portal>
       <Dialog.Overlay className="bg-black/60 inset-0 fixed" />
@@ -17,12 +36,22 @@ export function CreateAdModal() {
             <label className="font-semibold" htmlFor="game">
               Qual o game?
             </label>
-            <Input
-              type="text"
+            <select
               name="game"
               id="game"
-              placeholder="Selecione o game que deseja jogar"
-            />
+              placeholder=""
+              className="bg-zinc-900 py-3 px-4 rounded text-sm placeholder:text-zinc-500"
+              defaultValue=""
+            >
+              <option disabled value="">
+                Selecione o game que deseja jogar
+              </option>
+              {games.map((game) => (
+                <option key={game.id} value={game.id}>
+                  {game.title}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="flex flex-col gap-2 mt-4">
             <label className="font-semibold" htmlFor="name">
@@ -64,44 +93,76 @@ export function CreateAdModal() {
               <label className="font-semibold" htmlFor="weekDays">
                 Quando costuma jogar?
               </label>
-              <div className="flex flex-wrap gap-1">
-                <button
+              <ToggleGroup.Root
+                type="multiple"
+                className="flex flex-wrap gap-1"
+                value={weekDays}
+                onValueChange={setWeekDays}
+              >
+                <ToggleGroup.Item
+                  value="0"
                   title="Domingo"
-                  className="w-8 h-8 rounded bg-zinc-900 "
+                  className={`w-8 h-8 rounded  ${
+                    weekDays.includes("0") ? "bg-violet-500" : "bg-zinc-900"
+                  }`}
                 >
                   D
-                </button>
-                <button
-                  title="Domingo"
-                  className="w-8 h-8 rounded bg-zinc-900 "
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="1"
+                  title="Segunda-feira"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes("1") ? "bg-violet-500" : "bg-zinc-900"
+                  }`}
                 >
                   S
-                </button>
-                <button
-                  title="Domingo"
-                  className="w-8 h-8 rounded bg-zinc-900 "
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="2"
+                  title="Terça-feira"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes("2") ? "bg-violet-500" : "bg-zinc-900"
+                  }`}
                 >
                   T
-                </button>
-                <button
-                  title="Domingo"
-                  className="w-8 h-8 rounded bg-zinc-900 "
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="3"
+                  title="Quarta-feira"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes("3") ? "bg-violet-500" : "bg-zinc-900"
+                  }`}
                 >
                   Q
-                </button>
-                <button
-                  title="Domingo"
-                  className="w-8 h-8 rounded bg-zinc-900 "
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="4"
+                  title="Quinta-feira"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes("4") ? "bg-violet-500" : "bg-zinc-900"
+                  }`}
                 >
                   Q
-                </button>
-                <button
-                  title="Domingo"
-                  className="w-8 h-8 rounded bg-zinc-900 "
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="5"
+                  title="Sexta-feira"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes("5") ? "bg-violet-500" : "bg-zinc-900"
+                  }`}
                 >
                   S
-                </button>
-              </div>
+                </ToggleGroup.Item>
+                <ToggleGroup.Item
+                  value="6"
+                  title="Sábado"
+                  className={`w-8 h-8 rounded ${
+                    weekDays.includes("6") ? "bg-violet-500" : "bg-zinc-900"
+                  }`}
+                >
+                  S
+                </ToggleGroup.Item>
+              </ToggleGroup.Root>
             </div>
             <div className="flex flex-col gap-2 w-2/4">
               <label className="font-semibold" htmlFor="hourStart">
@@ -124,14 +185,14 @@ export function CreateAdModal() {
               </div>
             </div>
           </div>
-          <div className="flex mt-6 font-semibold items-center">
+          <label className="flex mt-6 font-semibold items-center">
             <Checkbox.Root className="w-6 h-6 p-1 rounded bg-zinc-900 mr-3">
-              <Checkbox.CheckboxIndicator spellCheck={true}>
+              <Checkbox.CheckboxIndicator>
                 <Check className="w-4 h-4 text-emerald-400" />
               </Checkbox.CheckboxIndicator>
             </Checkbox.Root>
             Costumo me conectar ao chat de voz
-          </div>
+          </label>
 
           <div className="flex flex-row justify-end mt-8 gap-4">
             <Dialog.Close

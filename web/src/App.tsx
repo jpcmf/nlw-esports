@@ -6,7 +6,7 @@ import { CreateAdBanner } from './components/CreateAdBanner';
 import { useEffect, useState } from 'react';
 import { CreateAdModal } from './components/CreateAdModal';
 
-interface Game {
+export interface Game {
   id: string;
   title: string;
   bannerUrl: string;

@@ -1,9 +1,10 @@
+import axios from "axios";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as Checkbox from "@radix-ui/react-checkbox";
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { Input } from "./Form/Input";
 import { Check, GameController } from "phosphor-react";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 export interface Game {
   id: string;
@@ -13,15 +14,45 @@ export interface Game {
 export function CreateAdModal() {
   const [games, setGames] = useState<Game[]>([]);
   const [weekDays, setWeekDays] = useState<string[]>([]);
+  const [useVoiceChannel, setUseVoiceChannel] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:3333/games")
-      .then((response) => response.json())
-      .then((data) => {
-        setGames(data);
+    axios("http://localhost:3333/games")
+      .then((response) => {
+        setGames(response.data);
       })
       .catch((err) => console.log(err));
   }, []);
+
+  async function handleCreateAd(event: FormEvent) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target as HTMLFormElement);
+    const data = Object.fromEntries(formData);
+
+    console.log(data);
+    console.log(weekDays);
+    console.log(useVoiceChannel);
+
+    if (!data.name) return;
+
+    try {
+      await axios.post(`http://localhost:3333/games/${data.game}/ads`, {
+        name: data.name,
+        yearsPlaying: Number(data.yearsPlaying),
+        discord: data.discord,
+        weekDays: weekDays.map(Number),
+        hourStart: data.hourStart,
+        hourEnd: data.hourEnd,
+        useVoiceChannel: useVoiceChannel,
+      });
+
+      alert("Dados salvos com sucesso.");
+    } catch (err) {
+      console.log(err);
+      alert("Erro ao salvar.");
+    }
+  }
 
   return (
     <Dialog.Portal>
@@ -31,7 +62,7 @@ export function CreateAdModal() {
           Publique um anúncio
         </Dialog.Title>
 
-        <form className="mt-8">
+        <form className="mt-8" onSubmit={handleCreateAd}>
           <div className="flex flex-col gap-2">
             <label className="font-semibold" htmlFor="game">
               Qual o game?
@@ -71,8 +102,8 @@ export function CreateAdModal() {
               </label>
               <Input
                 type="number"
-                name="yearPlaying"
-                id="yearPlaying"
+                name="yearsPlaying"
+                id="yearsPlaying"
                 placeholder="Tudo bem ser ZERO"
               />
             </div>
@@ -186,7 +217,17 @@ export function CreateAdModal() {
             </div>
           </div>
           <label className="flex mt-6 font-semibold items-center">
-            <Checkbox.Root className="w-6 h-6 p-1 rounded bg-zinc-900 mr-3">
+            <Checkbox.Root
+              checked={useVoiceChannel}
+              onCheckedChange={(checked) => {
+                if (checked === true) {
+                  setUseVoiceChannel(true);
+                } else {
+                  setUseVoiceChannel(false);
+                }
+              }}
+              className="w-6 h-6 p-1 rounded bg-zinc-900 mr-3"
+            >
               <Checkbox.CheckboxIndicator>
                 <Check className="w-4 h-4 text-emerald-400" />
               </Checkbox.CheckboxIndicator>
